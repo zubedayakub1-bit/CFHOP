@@ -1,1 +1,151 @@
-<p>dashboard works!</p>
+<div class="dashboard">
+  <!-- Stat cards -->
+  <section class="stats-grid">
+    <article class="stat-card" *ngFor="let stat of stats">
+      <div class="stat-top">
+        <div class="stat-icon" [class]="'tone-' + stat.tone">
+          <svg *ngIf="stat.icon === 'users'" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M2.8 19c.6-3.6 3-5.6 6.2-5.6s5.6 2 6.2 5.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M15.5 8.2a3 3 0 1 1 2.6 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M17.3 13.6c2.1.5 3.6 2.2 4 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg *ngIf="stat.icon === 'wallet'" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2.2" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/><circle cx="16.5" cy="14" r="1.1" fill="currentColor"/></svg>
+          <svg *ngIf="stat.icon === 'swap'" viewBox="0 0 24 24" fill="none"><path d="M4 8h13l-3.2-3.2M20 16H7l3.2 3.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg *ngIf="stat.icon === 'alert'" viewBox="0 0 24 24" fill="none"><path d="M10.6 4.6 2.9 18a1.6 1.6 0 0 0 1.4 2.4h15.4a1.6 1.6 0 0 0 1.4-2.4L13.4 4.6a1.6 1.6 0 0 0-2.8 0Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 10v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17" r="0.9" fill="currentColor"/></svg>
+        </div>
+
+        <svg class="sparkline" viewBox="0 0 64 26" preserveAspectRatio="none" [class]="'tone-' + stat.tone">
+          <path [attr.d]="sparklinePath(stat.sparkline)" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <p class="stat-label">{{ stat.label }}</p>
+      <p class="stat-value">{{ stat.value }}</p>
+      <p class="stat-delta" [class.down]="stat.trend === 'down'">
+        <span class="delta-arrow">{{ stat.trend === 'up' ? '▲' : '▼' }}</span>
+        {{ stat.deltaLabel }}
+      </p>
+    </article>
+  </section>
+
+  <!-- Cash flow + trust score -->
+  <section class="charts-row">
+    <article class="card cash-flow-card">
+      <div class="card-header">
+        <div>
+          <h2>Cash Flow</h2>
+          <p class="card-subtitle">Inflow vs outflow across all channels</p>
+        </div>
+        <div class="period-toggle">
+          <button
+            type="button"
+            *ngFor="let p of periods"
+            [class.active]="period() === p"
+            (click)="setPeriod(p)"
+          >
+            {{ p }}
+          </button>
+        </div>
+      </div>
+
+      <svg class="cash-flow-chart" viewBox="0 0 640 180" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="inflowFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.28"/>
+            <stop offset="100%" stop-color="#14b8a6" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path [attr.d]="inflowAreaPath()" fill="url(#inflowFill)" stroke="#14b8a6" stroke-width="2.2"/>
+        <path [attr.d]="outflowLinePath()" fill="none" stroke="#6366f1" stroke-width="2.2"/>
+      </svg>
+
+      <div class="chart-x-labels">
+        <span *ngFor="let l of activeSet().labels">{{ l }}</span>
+      </div>
+
+      <div class="legend">
+        <span class="legend-item"><i class="dot teal"></i>Inflow</span>
+        <span class="legend-item"><i class="dot indigo"></i>Outflow</span>
+      </div>
+    </article>
+
+    <article class="card trust-card">
+      <h2>Trust Score Distribution</h2>
+      <div class="trust-headline">
+        <span class="trust-value">{{ trustAverage }}</span>
+        <span class="trust-delta">▲ {{ trustAverageDelta }}%</span>
+        <span class="trust-caption">avg / 30d</span>
+      </div>
+
+      <div class="trust-bars">
+        <div class="trust-bar" *ngFor="let bin of trustBins">
+          <div class="bar-track">
+            <div class="bar-fill" [style.height.%]="barHeightPct(bin.value)"></div>
+          </div>
+        </div>
+      </div>
+      <div class="trust-x-labels">
+        <span *ngFor="let bin of trustBins">{{ bin.range }}</span>
+      </div>
+
+      <p class="trust-footnote">{{ totalScoredUsers | number }} total users scored</p>
+    </article>
+  </section>
+
+  <!-- Recent activity + opportunities -->
+  <section class="bottom-row">
+    <article class="card activity-card">
+      <div class="card-header">
+        <div>
+          <h2>Recent Activity</h2>
+          <p class="card-subtitle">Live transaction feed</p>
+        </div>
+        <a class="view-all" href="javascript:void(0)">View all →</a>
+      </div>
+
+      <table class="activity-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of recentActivity">
+            <td>
+              <div class="user-cell">
+                <span class="mini-avatar">{{ row.initials }}</span>
+                {{ row.user }}
+              </div>
+            </td>
+            <td>{{ row.type }}</td>
+            <td>{{ row.amount }}</td>
+            <td>
+              <span class="status-pill" [class]="'status-' + statusClass(row.status)">{{ row.status }}</span>
+            </td>
+            <td class="time-cell">{{ row.time }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+
+    <article class="card opportunities-card">
+      <div class="card-header">
+        <div>
+          <h2>Opportunities</h2>
+          <p class="card-subtitle">Active programs</p>
+        </div>
+      </div>
+
+      <div class="opportunity" *ngFor="let opp of opportunities">
+        <div class="opportunity-top">
+          <span class="opportunity-title">{{ opp.title }}</span>
+          <span class="opportunity-count">{{ opp.filled }}/{{ opp.total }}</span>
+        </div>
+        <div class="opportunity-track">
+          <div class="opportunity-fill" [style.width.%]="fillPct(opp)"></div>
+        </div>
+        <span class="opportunity-category">{{ opp.category }}</span>
+      </div>
+    </article>
+  </section>
+</div>

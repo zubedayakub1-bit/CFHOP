@@ -1,0 +1,193 @@
+
+:host {
+  display: block;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 68px;
+  padding: 0 24px;
+  background: var(--surface, #fff);
+  border-bottom: 1px solid var(--border, #e7e9f0);
+
+  // Title
+  &-title {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+    flex-shrink: 0;
+
+    h1 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      color: #1a1d29;
+    }
+  }
+
+  // Search
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    max-width: 420px;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 9px;
+    background: #f4f5f9;
+    border: 1px solid transparent;
+    color: #9198ab;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+
+    &:focus-within {
+      background: #fff;
+      border-color: #c7cdf7;
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 13.5px;
+      font-family: inherit;
+      color: #1a1d29;
+
+      &::placeholder {
+        color: #a6abba;
+      }
+    }
+  }
+
+  // Actions
+  &-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  // Date
+  .date {
+    font-size: 12.5px;
+    color: #7c8291;
+    white-space: nowrap;
+  }
+
+  // Icon button
+  .icon-btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 8px;
+    background: #f4f5f9;
+    color: #575e70;
+    cursor: pointer;
+
+    &:hover {
+      background: #eaecf3;
+    }
+
+    svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .icon-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 17px;
+      height: 17px;
+      padding: 0 4px;
+      border-radius: 999px;
+      background: #ef4444;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      border: 2px solid #fff;
+    }
+  }
+
+  // Role
+  .role-pill {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: #4f46e5;
+    background: #eef0fe;
+    border: 1px solid #d9dcfb;
+    border-radius: 6px;
+    padding: 4px 9px;
+    white-space: nowrap;
+  }
+
+  // User
+  .user-chip {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #4f7cf7, #6366f1);
+      flex-shrink: 0;
+    }
+
+    .user-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+
+      .user-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1a1d29;
+      }
+
+      .user-role {
+        font-size: 11px;
+        color: #8b91a3;
+      }
+    }
+  }
+}
+
+// Eyebrow text
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  color: #8b91a3;
+}
+
+// Responsive
+@media (max-width: 900px) {
+  .topbar {
+    .search,
+    .date {
+      display: none;
+    }
+  }
+}

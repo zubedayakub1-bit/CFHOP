@@ -1,1 +1,276 @@
-<p>wallet works!</p>
+<div class="wallets-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Wallets</h1>
+      <p>All personal, chama, and SACCO wallets</p>
+    </div>
+
+    <button class="refresh-btn" (click)="searchTerm = ''; selectedType = 'all'">
+      ↻ Refresh
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+
+    <input
+      type="text"
+      placeholder="Search wallet, account or ID..."
+      [(ngModel)]="searchTerm"
+    />
+
+    <select [(ngModel)]="selectedType">
+      <option value="all">All Types</option>
+      <option value="personal">Personal</option>
+      <option value="chama">Chama</option>
+      <option value="sacco">SACCO</option>
+    </select>
+
+  </div>
+
+  <!-- Wallets Table -->
+  <div class="table-container">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Wallet ID</th>
+          <th>Account</th>
+          <th>Type</th>
+          <th>Balance</th>
+          <th>Status</th>
+          <th>Last Tx</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let wallet of filteredWallets">
+
+          <td>{{ wallet.id }}</td>
+
+          <td>
+            <strong>{{ wallet.account }}</strong>
+            <small>{{ wallet.accountId }}</small>
+          </td>
+
+          <td>
+            <span class="type-badge">
+              {{ wallet.type | titlecase }}
+            </span>
+          </td>
+
+          <td>
+            {{ formatCurrency(wallet.balance) }}
+          </td>
+
+          <td>
+            <span
+              class="status-badge"
+              [class.active]="wallet.status === 'active'"
+              [class.frozen]="wallet.status === 'frozen'"
+            >
+              {{ wallet.status | titlecase }}
+            </span>
+          </td>
+
+          <td>
+            {{ wallet.lastTransaction }}
+          </td>
+
+          <td class="actions">
+
+            <button
+              class="view-btn"
+              (click)="viewWallet(wallet)"
+            >
+              View
+            </button>
+
+            <button
+              *ngIf="wallet.status === 'active'"
+              class="freeze-btn"
+              (click)="confirmFreeze(wallet)"
+            >
+              Freeze
+            </button>
+
+            <button
+              *ngIf="wallet.status === 'frozen'"
+              class="unfreeze-btn"
+              (click)="unfreezeWallet(wallet)"
+            >
+              Unfreeze
+            </button>
+
+          </td>
+
+        </tr>
+
+        <!-- No wallets -->
+        <tr *ngIf="filteredWallets.length === 0">
+          <td colspan="7" class="no-data">
+            No wallets found.
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+
+<!-- ================= VIEW WALLET MODAL ================= -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showViewModal"
+  (click)="closeViewModal()"
+>
+
+  <div
+    class="modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-header">
+      <h2>Wallet Details</h2>
+
+      <button
+        class="close-btn"
+        (click)="closeViewModal()"
+      >
+        ×
+      </button>
+    </div>
+
+    <div
+      class="modal-body"
+      *ngIf="selectedWallet"
+    >
+
+      <div class="detail-row">
+        <span>Wallet ID</span>
+        <strong>{{ selectedWallet.id }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Account</span>
+        <strong>{{ selectedWallet.account }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Account ID</span>
+        <strong>{{ selectedWallet.accountId }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Type</span>
+        <strong>{{ selectedWallet.type | titlecase }}</strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Balance</span>
+        <strong>
+          {{ formatCurrency(selectedWallet.balance) }}
+        </strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Status</span>
+        <strong>
+          {{ selectedWallet.status | titlecase }}
+        </strong>
+      </div>
+
+      <div class="detail-row">
+        <span>Last Transaction</span>
+        <strong>{{ selectedWallet.lastTransaction }}</strong>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button
+        class="cancel-btn"
+        (click)="closeViewModal()"
+      >
+        Close
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= FREEZE CONFIRMATION MODAL ================= -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showFreezeModal"
+  (click)="closeFreezeModal()"
+>
+
+  <div
+    class="modal small-modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-header">
+      <h2>Freeze Wallet</h2>
+
+      <button
+        class="close-btn"
+        (click)="closeFreezeModal()"
+      >
+        ×
+      </button>
+    </div>
+
+    <div
+      class="modal-body"
+      *ngIf="walletToFreeze"
+    >
+
+      <p>
+        Are you sure you want to freeze
+        <strong>{{ walletToFreeze.account }}</strong>'s wallet?
+      </p>
+
+      <p class="warning">
+        The wallet will not be able to perform transactions while frozen.
+      </p>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button
+        class="cancel-btn"
+        (click)="closeFreezeModal()"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="confirm-btn"
+        (click)="freezeWallet()"
+      >
+        Freeze Wallet
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

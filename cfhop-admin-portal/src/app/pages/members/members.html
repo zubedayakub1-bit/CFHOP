@@ -1,1 +1,255 @@
-<p>members works!</p>
+<section class="um">
+  <!-- Toolbar -->
+  <div class="card toolbar">
+    <input
+      class="search"
+      type="search"
+      placeholder="Search name, phone..."
+      [(ngModel)]="search"
+      aria-label="Search users by name or phone"
+    />
+
+    <div class="chips" role="tablist">
+      <button
+        *ngFor="let f of filters"
+        class="chip"
+        [class.chip--active]="activeFilter === f"
+        role="tab"
+        [attr.aria-selected]="activeFilter === f"
+        (click)="setFilter(f)"
+      >
+        {{ f | titlecase }}
+      </button>
+    </div>
+
+    <span class="count mono">{{ filteredUsers.length }} users</span>
+  </div>
+
+  <!-- Table -->
+  <div class="card table-card">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Status</th>
+            <th>
+              <button class="sort" (click)="sortBy('trustScore')">
+                Trust score <span class="sort__icon" [class.on]="sortKey === 'trustScore'">{{ sortIcon('trustScore') }}</span>
+              </button>
+            </th>
+            <th>
+              <button class="sort" (click)="sortBy('balance')">
+                Balance <span class="sort__icon" [class.on]="sortKey === 'balance'">{{ sortIcon('balance') }}</span>
+              </button>
+            </th>
+            <th>KYC</th>
+            <th>
+              <button class="sort" (click)="sortBy('joined')">
+                Joined <span class="sort__icon" [class.on]="sortKey === 'joined'">{{ sortIcon('joined') }}</span>
+              </button>
+            </th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let u of filteredUsers; trackBy: trackById">
+            <td>
+              <div class="user">
+                <span class="avatar" [style.background]="u.avatarColor">{{ initials(u.name) }}</span>
+                <div class="user__text">
+                  <span class="user__name">{{ u.name }}</span>
+                  <span class="user__phone mono">{{ u.phone }}</span>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <span class="badge badge--{{ u.status }}"><i class="dot"></i>{{ u.status }}</span>
+            </td>
+
+            <td>
+              <div class="trust">
+                <span class="trust__bar"><span class="trust__fill trust__fill--{{ trustLevel(u.trustScore) }}" [style.width.%]="u.trustScore"></span></span>
+                <span class="trust__num trust__num--{{ trustLevel(u.trustScore) }} mono">{{ u.trustScore }}</span>
+              </div>
+            </td>
+
+            <td class="mono balance">KES {{ u.balance | number }}</td>
+
+            <td><span class="badge badge--kyc-{{ u.kyc }}">{{ u.kyc }}</span></td>
+
+            <td class="mono muted">{{ u.joined }}</td>
+
+            <td>
+              <div class="actions">
+                <button class="btn" (click)="openView(u)">View</button>
+                <button class="btn" (click)="openEdit(u)">Edit</button>
+                <button *ngIf="u.status !== 'suspended'" class="btn" (click)="openSuspend(u)">Suspend</button>
+                <button *ngIf="u.status === 'suspended'" class="btn btn--reinstate" (click)="openReinstate(u)">Reinstate</button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredUsers.length === 0" class="empty">
+            <td colspan="7">No users match your search. Clear the search or pick another status.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Modals -->
+<div class="overlay" *ngIf="modal && selected" (click)="closeModal()">
+  <div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+
+    <!-- VIEW -->
+    <ng-container *ngIf="modal === 'view'">
+      <header class="modal__head">
+        <div class="user">
+          <span class="avatar avatar--lg" [style.background]="selected.avatarColor">{{ initials(selected.name) }}</span>
+          <div class="user__text">
+            <h2>{{ selected.name }}</h2>
+            <span class="user__phone mono">{{ selected.phone }}</span>
+          </div>
+        </div>
+        <button class="close" (click)="closeModal()" aria-label="Close">✕</button>
+      </header>
+
+      <dl class="details">
+        <div><dt>Status</dt><dd><span class="badge badge--{{ selected.status }}"><i class="dot"></i>{{ selected.status }}</span></dd></div>
+        <div><dt>KYC</dt><dd><span class="badge badge--kyc-{{ selected.kyc }}">{{ selected.kyc }}</span></dd></div>
+        <div><dt>Balance</dt><dd class="mono">KES {{ selected.balance | number }}</dd></div>
+        <div><dt>Joined</dt><dd class="mono">{{ selected.joined }}</dd></div>
+        <div class="details__wide">
+          <dt>Trust score</dt>
+          <dd>
+            <div class="trust">
+              <span class="trust__bar trust__bar--wide"><span class="trust__fill trust__fill--{{ trustLevel(selected.trustScore) }}" [style.width.%]="selected.trustScore"></span></span>
+              <span class="trust__num trust__num--{{ trustLevel(selected.trustScore) }} mono">{{ selected.trustScore }}</span>
+            </div>
+          </dd>
+        </div>
+        <div class="details__wide" *ngIf="selected.suspendReason">
+          <dt>Suspension reason</dt><dd>{{ selected.suspendReason }}</dd>
+        </div>
+      </dl>
+
+      <footer class="modal__foot">
+        <button class="btn btn--lg" (click)="closeModal()">Close</button>
+        <button class="btn btn--lg btn--primary" (click)="openEdit(selected)">Edit user</button>
+      </footer>
+    </ng-container>
+
+    <!-- EDIT -->
+    <ng-container *ngIf="modal === 'edit'">
+      <header class="modal__head">
+        <h2>Edit user</h2>
+        <button class="close" (click)="closeModal()" aria-label="Close">✕</button>
+      </header>
+
+      <div class="form">
+        <label class="field">
+          <span>Full name</span>
+          <input type="text" [(ngModel)]="draft.name" [class.invalid]="formErrors.name" />
+          <small class="error" *ngIf="formErrors.name">{{ formErrors.name }}</small>
+        </label>
+
+        <label class="field">
+          <span>Phone</span>
+          <input type="text" class="mono" [(ngModel)]="draft.phone" [class.invalid]="formErrors.phone" />
+          <small class="error" *ngIf="formErrors.phone">{{ formErrors.phone }}</small>
+        </label>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Status</span>
+            <select [(ngModel)]="draft.status">
+              <option *ngFor="let s of statuses" [value]="s">{{ s | titlecase }}</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>KYC</span>
+            <select [(ngModel)]="draft.kyc">
+              <option *ngFor="let k of kycOptions" [value]="k">{{ k | titlecase }}</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Balance (KES)</span>
+            <input type="number" min="0" class="mono" [(ngModel)]="draft.balance" [class.invalid]="formErrors.balance" />
+            <small class="error" *ngIf="formErrors.balance">{{ formErrors.balance }}</small>
+          </label>
+          <label class="field">
+            <span>Trust score (0–100)</span>
+            <input type="number" min="0" max="100" class="mono" [(ngModel)]="draft.trustScore" [class.invalid]="formErrors.trustScore" />
+            <small class="error" *ngIf="formErrors.trustScore">{{ formErrors.trustScore }}</small>
+          </label>
+        </div>
+      </div>
+
+      <footer class="modal__foot">
+        <button class="btn btn--lg" (click)="closeModal()">Cancel</button>
+        <button class="btn btn--lg btn--primary" (click)="saveEdit()">Save changes</button>
+      </footer>
+    </ng-container>
+
+    <!-- SUSPEND -->
+    <ng-container *ngIf="modal === 'suspend'">
+      <header class="modal__head">
+        <h2>Suspend {{ selected.name }}?</h2>
+        <button class="close" (click)="closeModal()" aria-label="Close">✕</button>
+      </header>
+
+      <p class="modal__text">
+        {{ selected.name }} will lose access to their account and transactions until you reinstate them.
+      </p>
+
+      <div class="form">
+        <label class="field">
+          <span>Reason</span>
+          <select [(ngModel)]="suspendReason" [class.invalid]="suspendError" (ngModelChange)="suspendError = ''">
+            <option value="" disabled>Select a reason</option>
+            <option *ngFor="let r of suspendReasons" [value]="r">{{ r }}</option>
+          </select>
+          <small class="error" *ngIf="suspendError">{{ suspendError }}</small>
+        </label>
+
+        <label class="field">
+          <span>Note (optional)</span>
+          <textarea rows="3" [(ngModel)]="suspendNote" placeholder="Add context for other admins"></textarea>
+        </label>
+      </div>
+
+      <footer class="modal__foot">
+        <button class="btn btn--lg" (click)="closeModal()">Cancel</button>
+        <button class="btn btn--lg btn--danger" (click)="confirmSuspend()">Suspend user</button>
+      </footer>
+    </ng-container>
+
+    <!-- REINSTATE -->
+    <ng-container *ngIf="modal === 'reinstate'">
+      <header class="modal__head">
+        <h2>Reinstate {{ selected.name }}?</h2>
+        <button class="close" (click)="closeModal()" aria-label="Close">✕</button>
+      </header>
+
+      <p class="modal__text">
+        Their account will be set to Active and they can transact again.
+        <ng-container *ngIf="selected.suspendReason"><br /><strong>Suspended for:</strong> {{ selected.suspendReason }}</ng-container>
+      </p>
+
+      <footer class="modal__foot">
+        <button class="btn btn--lg" (click)="closeModal()">Cancel</button>
+        <button class="btn btn--lg btn--primary" (click)="confirmReinstate()">Reinstate user</button>
+      </footer>
+    </ng-container>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast toast--{{ toast.type }}" *ngIf="toast" role="status">{{ toast.message }}</div>

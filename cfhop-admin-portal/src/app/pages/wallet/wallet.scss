@@ -1,0 +1,624 @@
+.wallets-page {
+  padding: 30px;
+  background: #f7f8fa;
+  min-height: 100vh;
+}
+
+
+// ==============================
+// PAGE HEADER
+// ==============================
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #172033;
+  }
+
+  p {
+    margin-top: 7px;
+    color: #737b8c;
+    font-size: 14px;
+  }
+}
+
+
+.refresh-btn {
+  background: white;
+  border: 1px solid #dfe3e8;
+  padding: 10px 18px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 14px;
+
+  &:hover {
+    background: #f1f3f5;
+  }
+}
+
+
+
+// ==============================
+// FILTERS
+// ==============================
+
+.filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+
+.search-box {
+  background: white;
+  border: 1px solid #dfe3e8;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  width: 350px;
+  padding: 0 12px;
+
+  span {
+    font-size: 20px;
+    color: #7b8495;
+  }
+
+  input {
+    border: none;
+    outline: none;
+    padding: 12px;
+    width: 100%;
+    font-size: 14px;
+  }
+}
+
+
+select {
+  border: 1px solid #dfe3e8;
+  background: white;
+  border-radius: 7px;
+  padding: 0 15px;
+  min-width: 150px;
+  outline: none;
+  cursor: pointer;
+}
+
+
+
+// ==============================
+// TABLE
+// ==============================
+
+.table-card {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #e4e7ec;
+  overflow-x: auto;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+
+thead {
+  background: #f8f9fb;
+}
+
+
+th {
+  text-align: left;
+  padding: 16px;
+  font-size: 12px;
+  color: #667085;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+
+td {
+  padding: 18px 16px;
+  border-top: 1px solid #eef0f3;
+  color: #344054;
+  font-size: 14px;
+}
+
+
+tbody tr {
+
+  &:hover {
+    background: #fafbfc;
+  }
+
+}
+
+
+
+// ==============================
+// ACCOUNT
+// ==============================
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #e8f1ff;
+  color: #1769aa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+
+.account strong {
+  display: block;
+  color: #1d2939;
+}
+
+
+.account small {
+  display: block;
+  margin-top: 3px;
+  color: #98a2b3;
+}
+
+
+
+// ==============================
+// WALLET ID
+// ==============================
+
+.wallet-id {
+  font-weight: 600;
+  color: #475467;
+}
+
+
+
+// ==============================
+// BALANCE
+// ==============================
+
+.balance {
+  color: #101828;
+}
+
+
+
+// ==============================
+// TYPE BADGES
+// ==============================
+
+.type-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+
+  &.personal {
+    background: #eef4ff;
+    color: #175cd3;
+  }
+
+  &.chama {
+    background: #ecfdf3;
+    color: #027a48;
+  }
+
+  &.sacco {
+    background: #fff6ed;
+    color: #c4320a;
+  }
+}
+
+
+
+// ==============================
+// STATUS
+// ==============================
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+
+  &.active {
+    background: #ecfdf3;
+    color: #027a48;
+  }
+
+  &.frozen {
+    background: #fef3f2;
+    color: #b42318;
+  }
+}
+
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+
+
+// ==============================
+// ACTIONS
+// ==============================
+
+.actions {
+  display: flex;
+  gap: 7px;
+}
+
+
+.actions button {
+  border: none;
+  border-radius: 6px;
+  padding: 7px 11px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+
+.view-btn {
+  background: #eef4ff;
+  color: #175cd3;
+
+  &:hover {
+    background: #dbe8ff;
+  }
+}
+
+
+.freeze-btn {
+  background: #fef3f2;
+  color: #b42318;
+
+  &:hover {
+    background: #fee4e2;
+  }
+}
+
+
+.unfreeze-btn {
+  background: #ecfdf3;
+  color: #027a48;
+
+  &:hover {
+    background: #d1fadf;
+  }
+}
+
+
+
+// ==============================
+// NO RESULTS
+// ==============================
+
+.no-results {
+  text-align: center;
+  padding: 40px;
+  color: #98a2b3;
+}
+
+
+
+// ==============================
+// MODAL OVERLAY
+// ==============================
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 24, 40, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+
+
+// ==============================
+// VIEW MODAL
+// ==============================
+
+.modal {
+  background: white;
+  width: 600px;
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+
+.modal-header {
+  padding: 22px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #eaecf0;
+
+  h2 {
+    margin: 0;
+    color: #101828;
+  }
+
+  p {
+    margin: 5px 0 0;
+    color: #98a2b3;
+    font-size: 13px;
+  }
+}
+
+
+.close-btn {
+  border: none;
+  background: none;
+  font-size: 28px;
+  color: #667085;
+  cursor: pointer;
+
+  &:hover {
+    color: #101828;
+  }
+}
+
+
+
+// ==============================
+// WALLET PROFILE
+// ==============================
+
+.wallet-profile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 22px;
+  background: #f8f9fb;
+}
+
+
+.large-avatar {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: #dbe8ff;
+  color: #175cd3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+
+.wallet-profile h3 {
+  margin: 0;
+  color: #101828;
+}
+
+
+.wallet-profile p {
+  margin: 4px 0 0;
+  color: #667085;
+}
+
+
+
+// ==============================
+// DETAILS
+// ==============================
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  padding: 22px;
+}
+
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  span {
+    font-size: 12px;
+    color: #667085;
+  }
+
+  strong {
+    color: #344054;
+  }
+}
+
+
+.modal-balance {
+  color: #027a48 !important;
+  font-size: 17px;
+}
+
+
+.text-active {
+  color: #027a48 !important;
+}
+
+
+.text-frozen {
+  color: #b42318 !important;
+}
+
+
+
+// ==============================
+// MODAL FOOTER
+// ==============================
+
+.modal-footer {
+  padding: 18px 22px;
+  border-top: 1px solid #eaecf0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+
+.secondary-btn,
+.danger-btn,
+.success-btn,
+.cancel-btn {
+  padding: 10px 16px;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+
+.secondary-btn,
+.cancel-btn {
+  background: #f2f4f7;
+  color: #344054;
+}
+
+
+.danger-btn {
+  background: #d92d20;
+  color: white;
+
+  &:hover {
+    background: #b42318;
+  }
+}
+
+
+.success-btn {
+  background: #039855;
+  color: white;
+
+  &:hover {
+    background: #027a48;
+  }
+}
+
+
+
+// ==============================
+// CONFIRM MODAL
+// ==============================
+
+.confirm-modal {
+  background: white;
+  width: 420px;
+  max-width: 100%;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+
+.warning-icon {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: #fef3f2;
+  color: #d92d20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+
+.confirm-modal h2 {
+  margin-bottom: 10px;
+  color: #101828;
+}
+
+
+.confirm-modal p {
+  color: #667085;
+  line-height: 1.6;
+}
+
+
+.warning-text {
+  font-size: 13px;
+  color: #b42318 !important;
+}
+
+
+.confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+
+
+// ==============================
+// MOBILE
+// ==============================
+
+@media (max-width: 768px) {
+
+  .wallets-page {
+    padding: 18px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+
+  .search-box {
+    width: auto;
+  }
+
+  select {
+    height: 42px;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .table-card {
+    overflow-x: auto;
+  }
+
+}

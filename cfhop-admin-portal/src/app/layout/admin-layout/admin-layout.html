@@ -1,1 +1,19 @@
-<p>admin-layout works!</p>
+<div class="shell">
+  <app-sidebar />
+
+  <div class="shell-main">
+    <app-topbar
+      eyebrow="CFHOP Admin"
+      title="Financial Overview"
+      [notificationCount]="notificationCount"
+      roleLabel="SUPER_ADMIN"
+      [userName]="userName"
+      [userRole]="userRole"
+      [userInitials]="userInitials"
+    />
+
+    <main class="shell-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>
