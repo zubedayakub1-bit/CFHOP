@@ -1,9 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
-  imports: [],
   selector: 'app-modal',
-  styleUrl: './modal.scss',
   templateUrl: './modal.html',
+  styleUrl: './modal.scss',
+  host: { '(document:keydown.escape)': 'closed.emit()' },
 })
-export class Modal {}
+export class Modal {
+  title = input.required<string>();
+  size = input<'sm' | 'md' | 'lg'>('md');
+  closed = output<void>();
+}

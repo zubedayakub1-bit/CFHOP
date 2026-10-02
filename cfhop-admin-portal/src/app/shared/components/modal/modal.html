@@ -1,1 +1,22 @@
-<p>modal works!</p>
+<div class="overlay" (click)="closed.emit()">
+  <div
+    class="modal"
+    [class.sm]="size() === 'sm'"
+    [class.lg]="size() === 'lg'"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="title()"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="head">
+      <h2>{{ title() }}</h2>
+      <button class="close" type="button" (click)="closed.emit()" aria-label="Close">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </header>
+
+    <div class="body"><ng-content /></div>
+
+    <footer class="foot"><ng-content select="[modal-footer]" /></footer>
+  </div>
+</div>

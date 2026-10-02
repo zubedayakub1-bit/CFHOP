@@ -1,1 +1,130 @@
-<p>notification works!</p>
+<div class="notifications-page">
+
+  <!-- Header -->
+  <header class="page-header">
+
+    <div>
+      <p class="eyebrow">CFHOP Admin</p>
+
+      <h1>Notification Centre</h1>
+
+      <p class="date">
+        Friday, 2 October 2026
+      </p>
+    </div>
+
+
+    <div class="header-user">
+
+      <span class="notification">
+        5
+      </span>
+
+      <div class="avatar">
+        KN
+      </div>
+
+      <div class="user-details">
+        <strong>Kariuki N.</strong>
+        <span>Super Admin</span>
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- Notification Section -->
+  <section class="notifications-section">
+
+    <!-- Section Header -->
+    <div class="section-header">
+
+      <div>
+        <h2>All notifications</h2>
+
+        <p>
+          {{ unreadCount }} unread platform updates
+        </p>
+      </div>
+
+
+      <button
+        type="button"
+        class="mark-read-button"
+        (click)="markAllAsRead()"
+      >
+        Mark all as read
+      </button>
+
+    </div>
+
+
+    <!-- Notification List -->
+    <div class="notification-list">
+
+      <div
+        class="notification-card"
+        *ngFor="let item of notifications"
+        [class.unread]="item.unread"
+        (click)="markAsRead(item)"
+      >
+
+        <!-- Icon -->
+        <div
+          class="notification-icon"
+          [class.high]="item.type === 'high'"
+          [class.info]="item.type === 'info'"
+          [class.success]="item.type === 'success'"
+          [class.report]="item.type === 'report'"
+          [class.admin]="item.type === 'admin'"
+        >
+
+          <span *ngIf="item.type === 'high'">!</span>
+
+          <span *ngIf="item.type === 'info'">i</span>
+
+          <span *ngIf="item.type === 'success'">✓</span>
+
+          <span *ngIf="item.type === 'report'">▣</span>
+
+          <span *ngIf="item.type === 'admin'">+</span>
+
+        </div>
+
+
+        <!-- Content -->
+        <div class="notification-content">
+
+          <div class="notification-title-row">
+
+            <h3>
+              {{ item.title }}
+            </h3>
+
+            <span
+              *ngIf="item.unread"
+              class="unread-dot"
+            ></span>
+
+          </div>
+
+
+          <p class="message">
+            {{ item.message }}
+          </p>
+
+
+          <span class="time">
+            {{ item.time }}
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>

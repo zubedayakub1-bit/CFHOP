@@ -28,57 +28,57 @@ export interface NavGroup {
   styleUrl: './sidebar.scss',
 })
 export class Sidebar {
-  /** Labels of nav items whose dropdown is currently expanded. */
   private readonly openItems = signal<Set<string>>(new Set());
 
   readonly groups: NavGroup[] = [
     {
       label: 'Overview',
-      items: [{ label: 'Dashboard', icon: 'home', route: '/dashboard' }],
+      items: [
+        { label: 'Dashboard', icon: 'home', route: '/dashboard' },
+      ],
     },
+
     {
       label: 'Users & Funds',
       items: [
-        {
-          label: 'Users',
-          icon: 'users',
-          route:'/Users'
-        },
+        { label: 'Users', icon: 'users', route: '/Users' },
         { label: 'Wallets', icon: 'wallet', route: '/wallets' },
-        {
-          label: 'Transactions',
-          icon: 'swap',
-          
-        },
-        { label: 'Chamas & SACCOs', icon: 'group', route: '/chamas' },
+        { label: 'Transactions', icon: 'swap', route: '/Transactions' },
+        { label: 'Savings', icon: 'savings', route: '/savings' },
       ],
     },
+
     {
-      label: 'Community Products',
+      label: 'Health & Insurance',
       items: [
-        { label: 'Health', icon: 'heart', route: '/health' },
+        { label: 'Financial Health', icon: 'heart', route: '/health' },
         { label: 'Insurance', icon: 'shield', route: '/insurance' },
-        { label: 'Trust Score', icon: 'star', route: '/trust-score' },
-        { label: 'Opportunities', icon: 'briefcase', route: '/opportunities' },
+        { label: 'Clinics', icon: 'clinic', route: '/clinics' },
       ],
     },
+
     {
-      label: 'Risk & Admin',
+      label: 'Security & Admin',
       items: [
-        { label: 'Fraud', icon: 'alert', route: '/fraud', badge: 23 },
+        { label: 'Fraud & Security', icon: 'alert', route: '/fraud' },
+        { label: 'Notifications', icon: 'bell', route: '/notifications' },
         { label: 'Reports', icon: 'chart', route: '/reports' },
         { label: 'Settings', icon: 'gear', route: '/settings' },
+        { label: 'Profile', icon: 'user', route: '/profile' },
+        { label: 'Logout', icon: 'user', route: '/logout' },
       ],
     },
   ];
 
   toggle(label: string): void {
     const next = new Set(this.openItems());
+
     if (next.has(label)) {
       next.delete(label);
     } else {
       next.add(label);
     }
+
     this.openItems.set(next);
   }
 

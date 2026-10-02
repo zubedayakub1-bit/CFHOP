@@ -1,1 +1,146 @@
-<p>financialhealth works!</p>
+<div class="page">
+  <div class="stat-grid">
+    <div class="card stat">
+      <span class="label">Aggregate Buffer</span>
+      <span class="value">KES {{ aggregateBuffer | number }}</span>
+      <span class="hint">across {{ bufferUsers | number }} users</span>
+    </div>
+    <div class="card stat">
+      <span class="label">Utilization Rate</span>
+      <span class="value">{{ utilizationRate }}%</span>
+      <span class="hint">of allocated buffer</span>
+    </div>
+    <div class="card stat">
+      <span class="label">Active Buffers</span>
+      <span class="value">{{ activeBuffers | number }}</span>
+      <span class="hint">active health accounts</span>
+    </div>
+    <div class="card stat">
+      <span class="label">Avg Buffer Size</span>
+      <span class="value">KES {{ avgBuffer | number }}</span>
+      <span class="hint">per user</span>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <section class="card card-pad">
+      <h2 class="card-title">Health Buffer Utilization</h2>
+      <p class="sub">Monthly trend — % of total buffer used</p>
+      <div class="trend" role="img" aria-label="Line chart of monthly buffer utilization">
+        <svg viewBox="0 0 320 140" preserveAspectRatio="none">
+          <polyline [attr.points]="trendPoints" fill="none" stroke="#0f9d8a" stroke-width="2.5" />
+          @for (t of trend; track t.m; let i = $index) {
+            <circle [attr.cx]="trendX(i)" [attr.cy]="trendY(t.v)" r="3.5" fill="#0f9d8a" />
+          }
+        </svg>
+        <div class="trend-labels">
+          @for (t of trend; track t.m) { <span>{{ t.m }}</span> }
+        </div>
+      </div>
+    </section>
+
+    <section class="card card-pad">
+      <h2 class="card-title">Buffer Usage by Category</h2>
+      <p class="sub">Top health spending categories</p>
+      <ul class="cats">
+        @for (c of categories; track c.name) {
+          <li>
+            <div class="row">
+              <span>{{ c.name }}</span>
+              <span class="mono">KES {{ c.used | number }} / {{ c.total | number }}</span>
+            </div>
+            <div class="bar" [class.orange]="pct(c) >= 85" [class.red]="pct(c) >= 100"><span [style.width.%]="pct(c)"></span></div>
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+
+  <section class="card table-card">
+    <div class="head"><h2 class="card-title">Verified Clinics</h2><span class="muted sub-head">Partner healthcare facilities</span></div>
+    <div class="table-scroll">
+      <table class="table">
+        <thead><tr><th>Clinic</th><th>Region</th><th>Type</th><th>Status</th><th>Payments (mo)</th><th>Actions</th></tr></thead>
+        <tbody>
+          @for (c of clinics(); track c.id) {
+            <tr>
+              <td><div class="user-text"><span class="user-name">{{ c.name }}</span><span class="user-sub">{{ c.id }}</span></div></td>
+              <td>{{ c.region }}</td>
+              <td>{{ c.type }}</td>
+              <td><span class="badge dot" [class]="'badge dot ' + clinicTone(c.status)">{{ c.status }}</span></td>
+              <td class="mono">{{ c.payments }}</td>
+              <td>
+                <div class="actions">
+                  <button class="btn" [class.warn]="c.status === 'verified'" [class.success]="c.status !== 'verified'" (click)="openClinicAction(c)">
+                    {{ actionLabel(c) }}
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card table-card">
+    <div class="head"><h2 class="card-title">Medical Payments Log</h2><span class="muted sub-head">Recent health buffer disbursements</span></div>
+    <div class="table-scroll">
+      <table class="table">
+        <thead><tr><th>User</th><th>Clinic</th><th>Amount</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          @for (p of payments(); track p.user + p.date) {
+            <tr>
+              <td class="strong">{{ p.user }}</td>
+              <td>{{ p.clinic }}</td>
+              <td class="mono strong">KES {{ p.amount | number }}</td>
+              <td class="mono muted">{{ p.date }}</td>
+              <td><span class="badge dot" [class]="'badge dot ' + paymentTone(p.status)">{{ p.status }}</span></td>
+              <td>
+                <div class="actions">
+                  <button class="btn" (click)="openPayment(p)">View</button>
+                  @if (p.status === 'pending') { <button class="btn success" (click)="approvePayment(p)">Approve</button> }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+@if (clinicModal()) {
+  @if (selectedClinic(); as c) {
+    <app-modal [title]="actionLabel(c) + ' ' + c.name + '?'" size="sm" (closed)="closeClinicModal()">
+      <p class="modal-text">
+        @if (c.status === 'verified') { This clinic will no longer be able to receive health buffer payments until it is verified again. }
+        @else { This clinic will be marked verified and members can use their health buffer here. }
+      </p>
+      <ng-container modal-footer>
+        <button class="btn lg" (click)="closeClinicModal()">Cancel</button>
+        <button class="btn lg" [class.danger]="c.status === 'verified'" [class.primary]="c.status !== 'verified'" (click)="confirmClinicAction()">
+          {{ actionLabel(c) }}
+        </button>
+      </ng-container>
+    </app-modal>
+  }
+}
+
+@if (paymentModal()) {
+  @if (selectedPayment(); as p) {
+    <app-modal title="Payment details" (closed)="closePaymentModal()">
+      <dl class="details">
+        <div><dt>User</dt><dd>{{ p.user }}</dd></div>
+        <div><dt>Status</dt><dd><span class="badge dot" [class]="'badge dot ' + paymentTone(p.status)">{{ p.status }}</span></dd></div>
+        <div class="wide"><dt>Clinic</dt><dd>{{ p.clinic }}</dd></div>
+        <div><dt>Amount</dt><dd class="mono">KES {{ p.amount | number }}</dd></div>
+        <div><dt>Date</dt><dd class="mono">{{ p.date }}</dd></div>
+      </dl>
+      <ng-container modal-footer>
+        <button class="btn lg" (click)="closePaymentModal()">Close</button>
+        @if (p.status === 'pending') { <button class="btn lg primary" (click)="approvePayment(p)">Approve payment</button> }
+      </ng-container>
+    </app-modal>
+  }
+}

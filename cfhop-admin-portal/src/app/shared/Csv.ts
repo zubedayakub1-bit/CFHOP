@@ -1,4 +1,3 @@
-
 /** Downloads a 2D array as a CSV file in the browser. */
 export function downloadCsv(filename: string, rows: (string | number)[][]): void {
   const csv = rows

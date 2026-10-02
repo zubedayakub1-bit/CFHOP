@@ -1,1 +1,365 @@
-<p>fraudsecurity works!</p>
+<div class="fraud-page">
+
+  <!-- Header -->
+  <header class="page-header">
+
+    <div>
+      <p class="eyebrow">CFHOP Admin</p>
+
+      <h1>Fraud & Security</h1>
+
+      <p class="date">
+        Friday, 2 October 2026
+      </p>
+    </div>
+
+    <div class="header-user">
+
+      <span class="notification">
+        5
+      </span>
+
+      <div class="avatar">
+        KN
+      </div>
+
+      <div class="user-details">
+        <strong>Kariuki N.</strong>
+        <span>Super Admin</span>
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- Statistics -->
+  <section class="stats-grid">
+
+    <div class="stat-card">
+
+      <div class="stat-icon alert-icon">
+        !
+      </div>
+
+      <div>
+        <span class="stat-label">Open Alerts</span>
+        <h2>{{ openAlerts }}</h2>
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon investigating-icon">
+        !
+      </div>
+
+      <div>
+        <span class="stat-label">Investigating</span>
+        <h2>{{ investigating }}</h2>
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon resolved-icon">
+        ✓
+      </div>
+
+      <div>
+        <span class="stat-label">Resolved Today</span>
+        <h2>{{ resolvedToday }}</h2>
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon risk-icon">
+        R
+      </div>
+
+      <div>
+        <span class="stat-label">Avg Risk Score</span>
+        <h2>{{ averageRiskScore }}</h2>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- Main Content -->
+  <div class="content-grid">
+
+
+    <!-- Fraud Alert Feed -->
+    <section class="section">
+
+      <div class="section-header">
+
+        <div>
+          <h2>Fraud Alert Feed</h2>
+
+          <p>
+            Recent security alerts requiring attention
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="alert-list">
+
+        <div
+          class="alert-card"
+          *ngFor="let alert of alerts"
+          [class.selected]="selectedAlert.id === alert.id"
+          (click)="selectAlert(alert)"
+        >
+
+          <div class="alert-top">
+
+            <div class="alert-tags">
+
+              <span
+                class="severity"
+                [class.low]="alert.severity === 'low'"
+                [class.medium]="alert.severity === 'medium'"
+                [class.high]="alert.severity === 'high'"
+                [class.critical]="alert.severity === 'critical'"
+              >
+                {{ alert.severity }}
+              </span>
+
+              <span
+                class="status"
+                [class.open]="alert.status === 'open'"
+                [class.investigating]="alert.status === 'investigating'"
+                [class.resolved]="alert.status === 'resolved'"
+              >
+                {{ alert.status }}
+              </span>
+
+            </div>
+
+            <span class="alert-id">
+              {{ alert.id }}
+            </span>
+
+          </div>
+
+
+          <h3>
+            {{ alert.user }}
+          </h3>
+
+
+          <p class="description">
+            {{ alert.description }}
+          </p>
+
+
+          <div class="alert-details">
+
+            <span>
+              {{ alert.transactionId }}
+            </span>
+
+            <strong>
+              KES {{ formatKES(alert.amount) }}
+            </strong>
+
+          </div>
+
+
+          <div class="alert-bottom">
+
+            <span>
+              {{ alert.time }}
+            </span>
+
+            <span class="risk-score">
+              Risk: <strong>{{ alert.riskScore }}</strong>
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- Risk Breakdown -->
+    <aside class="risk-panel">
+
+      <div class="section-header">
+
+        <div>
+          <h2>Risk Breakdown</h2>
+
+          <p>
+            Selected alert risk analysis
+          </p>
+        </div>
+
+      </div>
+
+
+      <!-- Composite Score -->
+      <div class="composite-card">
+
+        <div>
+          <span>Composite Risk Score</span>
+
+          <strong>
+            {{ selectedAlert.riskScore }}
+          </strong>
+
+          <small>/ 100</small>
+        </div>
+
+        <div class="risk-circle">
+          {{ selectedAlert.riskScore }}
+        </div>
+
+      </div>
+
+
+      <!-- Risk Factors -->
+      <div class="risk-factors">
+
+        <h3>
+          Risk Factor Breakdown
+        </h3>
+
+
+        <div
+          class="risk-factor"
+          *ngFor="let factor of riskFactors"
+        >
+
+          <div class="factor-header">
+
+            <span>
+              {{ factor.name }}
+            </span>
+
+            <strong>
+              {{ factor.score }}
+            </strong>
+
+          </div>
+
+
+          <div class="progress-track">
+
+            <div
+              class="progress-bar"
+              [style.width.%]="factor.score"
+            ></div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Linked Transaction -->
+      <div class="linked-transaction">
+
+        <h3>
+          Linked Transaction
+        </h3>
+
+
+        <div class="transaction-row">
+
+          <span>Transaction</span>
+
+          <strong>
+            {{ selectedAlert.transactionId }}
+          </strong>
+
+        </div>
+
+
+        <div class="transaction-row">
+
+          <span>User</span>
+
+          <strong>
+            {{ selectedAlert.user }}
+          </strong>
+
+        </div>
+
+
+        <div class="transaction-row">
+
+          <span>Amount</span>
+
+          <strong>
+            KES {{ formatKES(selectedAlert.amount) }}
+          </strong>
+
+        </div>
+
+
+        <div class="transaction-row">
+
+          <span>Alert Time</span>
+
+          <strong>
+            {{ selectedAlert.time }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- Actions -->
+      <div class="actions">
+
+        <button
+          type="button"
+          class="resolve-button"
+          (click)="markResolved()"
+        >
+          Mark Resolved
+        </button>
+
+
+        <button
+          type="button"
+          class="investigate-button"
+          (click)="startInvestigation()"
+        >
+          Start Investigation
+        </button>
+
+
+        <button
+          type="button"
+          class="freeze-button"
+          (click)="freezeUser()"
+        >
+          Freeze User Account
+        </button>
+
+      </div>
+
+    </aside>
+
+  </div>
+
+</div>

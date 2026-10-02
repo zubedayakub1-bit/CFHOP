@@ -1,0 +1,5 @@
+@if (service.toast(); as t) {
+  <div class="toast" [class.info]="t.type === 'info'" [class.error]="t.type === 'error'" role="status">
+    {{ t.message }}
+  </div>
+}

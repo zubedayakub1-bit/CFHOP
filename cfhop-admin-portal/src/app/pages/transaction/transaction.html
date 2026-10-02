@@ -1,1 +1,540 @@
-<p>transaction works!</p>
+<div class="transaction-page">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb">CFHOP Admin</div>
+      <h1>Transaction Ledger</h1>
+      <p>Monitor and manage financial transactions</p>
+    </div>
+
+    <button
+      class="export-button"
+      *ngIf="tab() === 'transactions'"
+      (click)="exportCsv()"
+    >
+      Export CSV
+    </button>
+  </div>
+
+  <!-- TABS -->
+  <div class="page-tabs">
+
+    <button
+      [class.active]="tab() === 'wallets'"
+      (click)="tab.set('wallets')"
+    >
+      Wallets
+    </button>
+
+    <button
+      [class.active]="tab() === 'transactions'"
+      (click)="tab.set('transactions')"
+    >
+      Transactions
+    </button>
+
+  </div>
+
+
+  <!-- ===================== WALLETS ===================== -->
+
+  <section *ngIf="tab() === 'wallets'" class="content-card">
+
+    <div class="section-header">
+
+      <div>
+        <h2>Wallets</h2>
+        <p>Manage wallet accounts and balances</p>
+      </div>
+
+      <input
+        type="text"
+        placeholder="Search wallet..."
+        [ngModel]="walletSearch()"
+        (ngModelChange)="walletSearch.set($event)"
+      >
+
+    </div>
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Wallet ID</th>
+            <th>Member</th>
+            <th>Phone</th>
+            <th>Balance</th>
+            <th>Daily Limit</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let wallet of visibleWallets()">
+
+            <td>
+              <strong>{{ wallet.id }}</strong>
+            </td>
+
+            <td>
+              <div class="member-name">
+                <span class="member-avatar">
+                  {{ initials(wallet.member) }}
+                </span>
+
+                {{ wallet.member }}
+              </div>
+            </td>
+
+            <td>{{ wallet.phone }}</td>
+
+            <td>
+              <strong>KES {{ wallet.balance | number }}</strong>
+            </td>
+
+            <td>
+              KES {{ wallet.dailyLimit | number }}
+            </td>
+
+            <td>
+              <span
+                class="status"
+                [class.completed]="wallet.status === 'active'"
+                [class.flagged]="wallet.status === 'frozen'"
+              >
+                {{ wallet.status | titlecase }}
+              </span>
+            </td>
+
+            <td class="actions">
+
+              <button
+                class="action-button"
+                (click)="openTopUp(wallet)"
+              >
+                Top Up
+              </button>
+
+              <button
+                class="action-button danger"
+                (click)="openFreeze(wallet)"
+              >
+                {{ wallet.status === 'active' ? 'Freeze' : 'Unfreeze' }}
+              </button>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- ===================== TRANSACTIONS ===================== -->
+
+  <section *ngIf="tab() === 'transactions'">
+
+    <!-- SUMMARY -->
+    <div class="summary-cards">
+
+      <div class="summary-card">
+        <span>Total Transactions</span>
+        <strong>{{ txs().length }}</strong>
+      </div>
+
+      <div class="summary-card">
+        <span>Total Volume</span>
+
+        <strong>
+          KES {{ txs().reduce((total, transaction) => total + transaction.amount, 0) | number }}
+        </strong>
+      </div>
+
+      <div class="summary-card">
+        <span>Completed</span>
+
+        <strong>
+          {{ txs().filter(t => t.status === 'completed').length }}
+        </strong>
+      </div>
+
+      <div class="summary-card">
+        <span>Pending</span>
+
+        <strong>
+          {{ txs().filter(t => t.status === 'pending').length }}
+        </strong>
+      </div>
+
+    </div>
+
+
+    <!-- TRANSACTION TABLE -->
+    <div class="content-card">
+
+      <div class="section-header">
+
+        <div>
+          <h2>Recent Transactions</h2>
+          <p>Latest wallet and financial activity</p>
+        </div>
+
+        <div class="filters">
+
+          <input
+            type="text"
+            placeholder="Search transaction..."
+            [ngModel]="search()"
+            (ngModelChange)="search.set($event)"
+          >
+
+          <select
+            [ngModel]="filter()"
+            (ngModelChange)="filter.set($event)"
+          >
+            <option value="all">All Statuses</option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+            <option value="failed">Failed</option>
+          </select>
+
+          <select
+            [ngModel]="type()"
+            (ngModelChange)="type.set($event)"
+          >
+            <option value="">All Types</option>
+
+            <option
+              *ngFor="let transactionType of types"
+              [value]="transactionType"
+            >
+              {{ transactionType }}
+            </option>
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Transaction ID</th>
+              <th>User</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Channel</th>
+              <th>Action</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr *ngFor="let transaction of visibleTxs()">
+
+              <td>
+                <strong>{{ transaction.id }}</strong>
+              </td>
+
+              <td>{{ transaction.user }}</td>
+
+              <td>
+                <span
+                  class="type-badge"
+                  [class.blue]="transaction.type === 'Chama'"
+                  [class.green]="transaction.type === 'Health'"
+                  [class.orange]="transaction.type === 'Withdrawal'"
+                  [class.purple]="transaction.type === 'Insurance'"
+                  [class.teal]="transaction.type === 'Deposit'"
+                  [class.grey]="transaction.type === 'Transfer'"
+                >
+                  {{ transaction.type }}
+                </span>
+              </td>
+
+              <td>
+                <strong>
+                  KES {{ transaction.amount | number }}
+                </strong>
+              </td>
+
+              <td>
+                <span
+                  class="status"
+                  [class.completed]="transaction.status === 'completed'"
+                  [class.pending]="transaction.status === 'pending'"
+                  [class.failed]="transaction.status === 'failed'"
+                >
+                  {{ transaction.status | titlecase }}
+                </span>
+              </td>
+
+              <td>{{ transaction.date }}</td>
+
+              <td>{{ transaction.channel }}</td>
+
+              <td>
+                <button
+                  class="action-button"
+                  (click)="openTx(transaction)"
+                >
+                  View
+                </button>
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= TRANSACTION MODAL ================= -->
+
+  <div
+    class="modal-backdrop"
+    *ngIf="txModal()"
+    (click)="closeTx()"
+  >
+
+    <div
+      class="modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="modal-header">
+        <div>
+          <h2>Transaction Details</h2>
+          <p>{{ selectedTx()?.id }}</p>
+        </div>
+
+        <button
+          class="close-button"
+          (click)="closeTx()"
+        >
+          ×
+        </button>
+      </div>
+
+      <div *ngIf="selectedTx()" class="modal-content">
+
+        <div class="detail-row">
+          <span>User</span>
+          <strong>{{ selectedTx()?.user }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Type</span>
+          <strong>{{ selectedTx()?.type }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Amount</span>
+          <strong>KES {{ selectedTx()?.amount | number }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Status</span>
+          <strong>{{ selectedTx()?.status | titlecase }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Date</span>
+          <strong>{{ selectedTx()?.date }}</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Channel</span>
+          <strong>{{ selectedTx()?.channel }}</strong>
+        </div>
+
+      </div>
+
+      <div class="modal-actions">
+
+        <button
+          *ngIf="selectedTx()?.status === 'pending'"
+          class="primary-button"
+          (click)="approve(selectedTx()!)"
+        >
+          Approve
+        </button>
+
+        <button
+          *ngIf="selectedTx()?.status === 'failed'"
+          class="secondary-button"
+          (click)="retry(selectedTx()!)"
+        >
+          Retry
+        </button>
+
+        <button
+          class="secondary-button"
+          (click)="closeTx()"
+        >
+          Close
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================= WALLET TOP-UP MODAL ================= -->
+
+  <div
+    class="modal-backdrop"
+    *ngIf="walletModal() === 'topup'"
+    (click)="closeWallet()"
+  >
+
+    <div
+      class="modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="modal-header">
+        <div>
+          <h2>Top Up Wallet</h2>
+          <p>{{ selectedWallet()?.member }}</p>
+        </div>
+
+        <button
+          class="close-button"
+          (click)="closeWallet()"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="modal-content">
+
+        <label>Amount (KES)</label>
+
+        <input
+          type="number"
+          [(ngModel)]="amount"
+          placeholder="Enter amount"
+        >
+
+        <p
+          class="error-message"
+          *ngIf="amountSubmitted && amountInvalid"
+        >
+          Please enter a valid amount.
+        </p>
+
+      </div>
+
+      <div class="modal-actions">
+
+        <button
+          class="primary-button"
+          (click)="confirmTopUp()"
+        >
+          Confirm Top Up
+        </button>
+
+        <button
+          class="secondary-button"
+          (click)="closeWallet()"
+        >
+          Cancel
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================= FREEZE MODAL ================= -->
+
+  <div
+    class="modal-backdrop"
+    *ngIf="walletModal() === 'freeze'"
+    (click)="closeWallet()"
+  >
+
+    <div
+      class="modal"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="modal-header">
+        <div>
+          <h2>
+            {{ selectedWallet()?.status === 'active' ? 'Freeze Wallet' : 'Unfreeze Wallet' }}
+          </h2>
+
+          <p>{{ selectedWallet()?.member }}</p>
+        </div>
+
+        <button
+          class="close-button"
+          (click)="closeWallet()"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="modal-content">
+
+        <p>
+          Are you sure you want to
+          {{ selectedWallet()?.status === 'active' ? 'freeze' : 'unfreeze' }}
+          this wallet?
+        </p>
+
+      </div>
+
+      <div class="modal-actions">
+
+        <button
+          class="primary-button"
+          (click)="confirmFreeze()"
+        >
+          Confirm
+        </button>
+
+        <button
+          class="secondary-button"
+          (click)="closeWallet()"
+        >
+          Cancel
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

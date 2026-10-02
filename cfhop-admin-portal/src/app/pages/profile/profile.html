@@ -1,1 +1,242 @@
-<p>profile works!</p>
+<div class="profile-page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+
+    <div>
+      <div class="breadcrumb">CFHOP Admin</div>
+      <h1>Admin Profile</h1>
+    </div>
+
+    <div class="header-right">
+
+      <span class="date">
+        Friday, 2 October 2026
+      </span>
+
+      <span class="notification">
+        5
+      </span>
+
+      <div class="admin">
+
+        <div class="avatar">
+          {{ userInitials }}
+        </div>
+
+        <div class="admin-info">
+          <strong>{{ userName }}</strong>
+          <span>Super Admin</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- PROFILE SUMMARY -->
+  <section class="profile-summary">
+
+    <div class="large-avatar">
+      {{ userInitials }}
+    </div>
+
+    <div class="profile-name">
+
+      <h2>
+        {{ userName }}
+      </h2>
+
+      <p>
+        {{ userRole }}
+      </p>
+
+      <span class="status">
+        Active account
+      </span>
+
+    </div>
+
+  </section>
+
+
+  <!-- ACCOUNT INFORMATION -->
+  <section class="account-card">
+
+    <div class="account-item">
+
+      <span class="label">
+        Last sign in
+      </span>
+
+      <strong>
+        {{ lastSignIn }}
+      </strong>
+
+    </div>
+
+    <div class="account-item">
+
+      <span class="label">
+        Access level
+      </span>
+
+      <strong>
+        {{ accessLevel }}
+      </strong>
+
+    </div>
+
+    <div class="account-item">
+
+      <span class="label">
+        Two-factor auth
+      </span>
+
+      <strong class="enabled">
+        {{ twoFactorStatus }}
+      </strong>
+
+    </div>
+
+  </section>
+
+
+  <!-- MAIN CONTENT -->
+  <div class="profile-grid">
+
+    <!-- PERSONAL INFORMATION -->
+
+    <section class="profile-card">
+
+      <div class="card-header">
+
+        <h2>Personal information</h2>
+
+        <p>
+          Your administrator account details
+        </p>
+
+      </div>
+
+
+      <div class="form-grid">
+
+        <div class="form-group">
+
+          <label>
+            Full name
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="userName"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Work email
+          </label>
+
+          <input
+            type="email"
+            [(ngModel)]="email"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Phone number
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="phone"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Department
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="department"
+          >
+
+        </div>
+
+      </div>
+
+
+      <button
+        class="primary-button"
+        (click)="saveProfile()"
+      >
+        Save profile
+      </button>
+
+    </section>
+
+
+    <!-- SECURITY -->
+
+    <section class="profile-card">
+
+      <div class="card-header">
+
+        <h2>Security</h2>
+
+        <p>
+          Manage password and account protection
+        </p>
+
+      </div>
+
+
+      <div class="security-item">
+
+        <div>
+
+          <strong>
+            Two-factor authentication
+          </strong>
+
+          <p>
+            Verification codes are sent to your authenticator app.
+          </p>
+
+        </div>
+
+        <span class="security-status">
+          Enabled
+        </span>
+
+      </div>
+
+
+      <button
+        class="secondary-button"
+        (click)="changePassword()"
+      >
+        Change password
+      </button>
+
+    </section>
+
+  </div>
+
+</div>

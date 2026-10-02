@@ -1,1 +1,248 @@
-<p>clinics works!</p>
+<div class="clinics-page">
+
+  <!-- Header -->
+  <header class="page-header">
+
+    <div>
+      <p class="eyebrow">CFHOP Admin</p>
+
+      <h1>Clinic Network</h1>
+
+      <p class="date">
+        Friday, 2 October 2026
+      </p>
+    </div>
+
+
+    <div class="header-user">
+
+      <span class="notification">
+        5
+      </span>
+
+      <div class="avatar">
+        KN
+      </div>
+
+      <div class="user-details">
+        <strong>Kariuki N.</strong>
+        <span>Super Admin</span>
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- Statistics -->
+  <section class="stats-grid">
+
+    <!-- Partner Clinics -->
+    <div class="stat-card">
+
+      <div class="stat-icon clinic-icon">
+        +
+      </div>
+
+      <div>
+        <span class="stat-label">
+          Partner clinics
+        </span>
+
+        <h2>
+          {{ partnerClinics }}
+        </h2>
+
+        <p class="muted">
+          Healthcare partners
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- Verified -->
+    <div class="stat-card">
+
+      <div class="stat-icon verified-icon">
+        ✓
+      </div>
+
+      <div>
+        <span class="stat-label">
+          Verified
+        </span>
+
+        <h2>
+          {{ verifiedClinics }}
+        </h2>
+
+        <p class="positive">
+          Active partners
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- Pending -->
+    <div class="stat-card">
+
+      <div class="stat-icon pending-icon">
+        !
+      </div>
+
+      <div>
+        <span class="stat-label">
+          Pending review
+        </span>
+
+        <h2>
+          {{ pendingClinics }}
+        </h2>
+
+        <p class="muted">
+          Require attention
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- Payments -->
+    <div class="stat-card">
+
+      <div class="stat-icon payment-icon">
+        KES
+      </div>
+
+      <div>
+        <span class="stat-label">
+          Payments this month
+        </span>
+
+        <h2>
+          KES {{ formatKES(monthlyPayments) }}
+        </h2>
+
+        <p class="positive">
+          October 2026
+        </p>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- Clinic Network -->
+  <section class="section">
+
+    <div class="section-header">
+
+      <div>
+        <h2>Clinic network</h2>
+
+        <p>
+          Review and manage healthcare partners
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- Table -->
+    <div class="table-card">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Clinic</th>
+            <th>ID</th>
+            <th>Region</th>
+            <th>Facility type</th>
+            <th>Monthly payments</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          <tr *ngFor="let clinic of clinics">
+
+            <!-- Clinic -->
+            <td>
+              <strong>
+                {{ clinic.name }}
+              </strong>
+            </td>
+
+
+            <!-- ID -->
+            <td class="clinic-id">
+              {{ clinic.id }}
+            </td>
+
+
+            <!-- Region -->
+            <td>
+              {{ clinic.region }}
+            </td>
+
+
+            <!-- Facility -->
+            <td>
+              {{ clinic.facilityType }}
+            </td>
+
+
+            <!-- Payments -->
+            <td class="payments">
+              {{ clinic.monthlyPayments }}
+            </td>
+
+
+            <!-- Status -->
+            <td>
+
+              <span
+                class="status"
+                [class.verified]="clinic.status === 'verified'"
+                [class.pending]="clinic.status === 'pending'"
+                [class.suspended]="clinic.status === 'suspended'"
+              >
+                {{ clinic.status }}
+              </span>
+
+            </td>
+
+
+            <!-- Action -->
+            <td>
+
+              <button
+                type="button"
+                class="review-button"
+                (click)="reviewClinic(clinic)"
+              >
+                Review
+              </button>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</div>

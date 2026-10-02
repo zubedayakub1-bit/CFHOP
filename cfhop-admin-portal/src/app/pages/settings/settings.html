@@ -1,1 +1,476 @@
-<p>settings works!</p>
+<div class="settings-page">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+
+    <div>
+      <div class="breadcrumb">CFHOP Admin</div>
+      <h1>System Settings</h1>
+    </div>
+
+    <div class="header-right">
+
+      <span class="date">
+        Friday, 2 October 2026
+      </span>
+
+      <span class="notification">
+        5
+      </span>
+
+      <div class="admin">
+
+        <div class="avatar">
+          {{ userInitials }}
+        </div>
+
+        <div class="admin-info">
+          <strong>{{ userName }}</strong>
+          <span>{{ userRole }}</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- TABS -->
+  <div class="tabs">
+
+    <button
+      class="tab"
+      [class.active]="activeTab === 'roles'"
+      (click)="selectTab('roles')"
+    >
+      Roles & Permissions
+    </button>
+
+    <button
+      class="tab"
+      [class.active]="activeTab === 'config'"
+      (click)="selectTab('config')"
+    >
+      System Config
+    </button>
+
+  </div>
+
+
+  <!-- ========================= -->
+  <!-- ROLES & PERMISSIONS -->
+  <!-- ========================= -->
+
+  <div
+    class="settings-content"
+    *ngIf="activeTab === 'roles'"
+  >
+
+    <!-- ADMIN ROLES -->
+
+    <section class="roles-section">
+
+      <div class="section-header">
+
+        <div>
+          <h2>Admin Roles</h2>
+
+          <p>
+            Manage administrator roles and access permissions.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="roles-list">
+
+        <button
+          class="role-card"
+          *ngFor="let role of roles"
+          [class.selected]="selectedRole === role.name"
+          (click)="selectRole(role)"
+        >
+
+          <div class="role-icon">
+            👤
+          </div>
+
+          <div class="role-details">
+
+            <strong>
+              {{ role.name }}
+            </strong>
+
+            <span>
+              {{ role.admins }} admins
+            </span>
+
+          </div>
+
+          <span class="arrow">
+            ›
+          </span>
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- PERMISSIONS -->
+
+    <section class="permissions-section">
+
+      <div class="permission-header">
+
+        <div>
+
+          <span class="role-label">
+            {{ selectedRole }}
+          </span>
+
+          <h2>
+            {{ enabledPermissions() }}
+            of
+            {{ permissions.length }}
+            permissions granted
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div class="permissions-list">
+
+        <div
+          class="permission-row"
+          *ngFor="let permission of permissions"
+        >
+
+          <div class="permission-name">
+
+            <span class="permission-icon">
+              ✓
+            </span>
+
+            <span>
+              {{ permission.name }}
+            </span>
+
+          </div>
+
+          <div
+            class="permission-status"
+            [class.disabled]="!permission.enabled"
+          >
+
+            <span *ngIf="permission.enabled">
+              Enabled
+            </span>
+
+            <span *ngIf="!permission.enabled">
+              Disabled
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- ========================= -->
+  <!-- SYSTEM CONFIG -->
+  <!-- ========================= -->
+
+  <div
+    class="config-grid"
+    *ngIf="activeTab === 'config'"
+  >
+
+    <!-- FRAUD DETECTION -->
+
+    <section class="config-card">
+
+      <div class="config-header">
+
+        <div class="config-icon">
+          🛡
+        </div>
+
+        <div>
+          <h2>Fraud Detection</h2>
+
+          <p>
+            Risk thresholds and alert configuration
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Auto-flag Score Threshold
+        </label>
+
+        <div class="input-with-unit">
+
+          <input
+            type="number"
+            value="80"
+          >
+
+          <span>pts</span>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Velocity Window
+        </label>
+
+        <div class="input-with-unit">
+
+          <input
+            type="number"
+            value="2"
+          >
+
+          <span>hrs</span>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Max Transactions per Window
+        </label>
+
+        <div class="input-with-unit">
+
+          <input
+            type="number"
+            value="8"
+          >
+
+          <span>txns</span>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Unusual Withdrawal Multiple
+        </label>
+
+        <div class="input-with-unit">
+
+          <input
+            type="number"
+            value="3"
+          >
+
+          <span>×</span>
+
+        </div>
+
+      </div>
+
+
+      <button class="save-button">
+        Save Changes
+      </button>
+
+    </section>
+
+
+    <!-- HEALTH BUFFER -->
+
+    <section class="config-card">
+
+      <div class="config-header">
+
+        <div class="config-icon">
+          ❤
+        </div>
+
+        <div>
+
+          <h2>Health Buffer</h2>
+
+          <p>
+            Buffer allocation and utilization rules
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Default Buffer Size
+        </label>
+
+        <div class="input-with-unit">
+
+          <input
+            type="number"
+            value="10000"
+          >
+
+          <span>KES</span>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Max Utilization Rate
+        </label>
+
+        <div class="input-with-unit">
+
+          <input
+            type="number"
+            value="80"
+          >
+
+          <span>%</span>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Replenishment Cycle
+        </label>
+
+        <div class="input-with-unit">
+
+          <input
+            type="number"
+            value="30"
+          >
+
+          <span>days</span>
+
+        </div>
+
+      </div>
+
+
+      <button class="save-button">
+        Save Changes
+      </button>
+
+    </section>
+
+
+    <!-- PLATFORM NOTIFICATIONS -->
+
+    <section class="config-card">
+
+      <div class="config-header">
+
+        <div class="config-icon">
+          🔔
+        </div>
+
+        <div>
+
+          <h2>Platform Notifications</h2>
+
+          <p>
+            Alert routing and channel settings
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Fraud Alert Email
+        </label>
+
+        <input
+          type="email"
+          value="security@cfhop.com"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          SMS Gateway
+        </label>
+
+        <input
+          type="text"
+          value="Africa's Talking"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Webhook Timeout
+        </label>
+
+        <div class="input-with-unit">
+
+          <input
+            type="number"
+            value="5000"
+          >
+
+          <span>ms</span>
+
+        </div>
+
+      </div>
+
+
+      <button class="save-button">
+        Save Changes
+      </button>
+
+    </section>
+
+  </div>
+
+</div>

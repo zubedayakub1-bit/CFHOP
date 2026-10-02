@@ -1,1 +1,93 @@
-<p>login works!</p>
+<div class="login-page">
+
+  <div class="login-card">
+
+    <!-- Logo -->
+    <div class="logo">
+      <div class="logo-mark">CF</div>
+
+      <div class="logo-text">
+        <span class="logo-name">CFHOP</span>
+        <span class="logo-subtitle">Admin Console</span>
+      </div>
+    </div>
+
+
+    <!-- Welcome -->
+    <div class="welcome">
+      <h1>Welcome back</h1>
+      <p>Sign in to access the CFHOP Admin Console.</p>
+    </div>
+
+
+    <!-- Login Form -->
+    <form (ngSubmit)="login()">
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Email address</label>
+
+        <input
+          id="email"
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          placeholder="Enter your email address"
+          autocomplete="email"
+        />
+      </div>
+
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">Password</label>
+
+        <div class="password-wrapper">
+
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            name="password"
+            [(ngModel)]="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+          />
+
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePassword()"
+          >
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+
+        </div>
+      </div>
+
+
+      <!-- Error Message -->
+      <p class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </p>
+
+
+      <!-- Login Button -->
+      <button
+        type="submit"
+        class="login-button"
+      >
+        Sign in
+      </button>
+
+    </form>
+
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p>CFHOP Admin Console</p>
+      <span>Secure access for authorized administrators</span>
+    </div>
+
+  </div>
+
+</div>

@@ -1,1 +1,276 @@
-<p>insurance works!</p>
+<div class="page">
+
+  <!-- STAT CARDS -->
+  <div class="stat-grid">
+
+    <div class="card stat">
+      <span class="label">Active Policies</span>
+      <span class="value">{{ activePolicies | number }}</span>
+      <span class="hint">across all products</span>
+    </div>
+
+    <div class="card stat">
+      <span class="label">Monthly Premiums</span>
+      <span class="value">KES {{ formatMillions(monthlyPremiums) }}</span>
+      <span class="hint">Sep 2026</span>
+    </div>
+
+    <div class="card stat">
+      <span class="label">Claims This Month</span>
+      <span class="value">KES {{ formatMillions(claimsThisMonth) }}</span>
+      <span class="hint">
+        claims ratio: {{ claimsRatio | number:'1.1-1' }}%
+      </span>
+    </div>
+
+    <div class="card stat">
+      <span class="label">Providers</span>
+      <span class="value">{{ activeProviders }}</span>
+      <span class="hint">insurance partners</span>
+    </div>
+
+  </div>
+
+  <!-- PREMIUM VS CLAIMS -->
+  <div class="card chart-card">
+
+    <div class="section-heading">
+      <div>
+        <h2>Premium vs Claims Timeline</h2>
+        <p>Monthly collected premiums and paid claims</p>
+      </div>
+    </div>
+
+    <div class="chart">
+
+      <div class="y-axis">
+        <span>6.0M</span>
+        <span>4.5M</span>
+        <span>3.0M</span>
+        <span>1.5M</span>
+        <span>0.0M</span>
+      </div>
+
+      <div class="chart-area">
+
+        <div class="grid-line"></div>
+        <div class="grid-line"></div>
+        <div class="grid-line"></div>
+        <div class="grid-line"></div>
+        <div class="grid-line"></div>
+
+        <div class="bars">
+
+          <div class="month">
+            <div class="bar-group">
+              <div class="bar premium" style="height: 45%"></div>
+              <div class="bar claims" style="height: 18%"></div>
+            </div>
+            <span>Apr</span>
+          </div>
+
+          <div class="month">
+            <div class="bar-group">
+              <div class="bar premium" style="height: 58%"></div>
+              <div class="bar claims" style="height: 24%"></div>
+            </div>
+            <span>May</span>
+          </div>
+
+          <div class="month">
+            <div class="bar-group">
+              <div class="bar premium" style="height: 52%"></div>
+              <div class="bar claims" style="height: 20%"></div>
+            </div>
+            <span>Jun</span>
+          </div>
+
+          <div class="month">
+            <div class="bar-group">
+              <div class="bar premium" style="height: 70%"></div>
+              <div class="bar claims" style="height: 30%"></div>
+            </div>
+            <span>Jul</span>
+          </div>
+
+          <div class="month">
+            <div class="bar-group">
+              <div class="bar premium" style="height: 78%"></div>
+              <div class="bar claims" style="height: 35%"></div>
+            </div>
+            <span>Aug</span>
+          </div>
+
+          <div class="month">
+            <div class="bar-group">
+              <div class="bar premium" style="height: 82%"></div>
+              <div class="bar claims" style="height: 38%"></div>
+            </div>
+            <span>Sep</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="legend">
+      <span>
+        <i class="legend-dot premium"></i>
+        Premiums
+      </span>
+
+      <span>
+        <i class="legend-dot claims"></i>
+        Claims
+      </span>
+    </div>
+
+  </div>
+
+  <!-- INSURANCE PRODUCTS -->
+  <div class="card table-card">
+
+    <div class="section-heading">
+      <div>
+        <h2>Insurance Products</h2>
+        <p>Active providers and product catalog</p>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Provider</th>
+            <th>Product</th>
+            <th>Monthly Premium</th>
+            <th>Coverage</th>
+            <th>Policyholders</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (product of products; track product.product) {
+
+            <tr>
+
+              <td>
+                <strong>{{ product.provider }}</strong>
+              </td>
+
+              <td>{{ product.product }}</td>
+
+              <td>
+                <strong>
+                  KES {{ formatMoney(product.premium) }}
+                </strong>
+              </td>
+
+              <td>
+                KES {{ formatMoney(product.coverage) }}
+              </td>
+
+              <td>
+                <strong>
+                  {{ product.policyholders | number }}
+                </strong>
+              </td>
+
+              <td>
+                <span
+                  class="status"
+                  [class.active]="product.status === 'active'"
+                  [class.inactive]="product.status === 'inactive'">
+                  {{ product.status }}
+                </span>
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <!-- ACTIVE POLICIES -->
+  <div class="card table-card">
+
+    <div class="section-heading">
+      <div>
+        <h2>Active Policies</h2>
+        <p>Sample policyholder view with premium schedule</p>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Policy ID</th>
+            <th>Policyholder</th>
+            <th>Product</th>
+            <th>Monthly Premium</th>
+            <th>Next Due</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (policy of policies; track policy.id) {
+
+            <tr>
+
+              <td class="mono">
+                {{ policy.id }}
+              </td>
+
+              <td>
+                <strong>{{ policy.policyholder }}</strong>
+              </td>
+
+              <td>{{ policy.product }}</td>
+
+              <td>
+                <strong>
+                  KES {{ formatMoney(policy.premium) }}
+                </strong>
+              </td>
+
+              <td>{{ policy.nextDue }}</td>
+
+              <td>
+                <span
+                  class="status"
+                  [class.active]="policy.status === 'active'"
+                  [class.lapsed]="policy.status === 'lapsed'">
+                  {{ policy.status }}
+                </span>
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>

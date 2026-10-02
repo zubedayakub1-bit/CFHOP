@@ -1,0 +1,39 @@
+.toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 200;
+
+  padding: 12px 18px;
+  border-radius: 10px;
+
+  background: #0b1220;
+  color: #fff;
+  font: 500 13.5px Arial, sans-serif;
+
+  border-left: 4px solid #0f9d8a;
+
+  box-shadow: 0 10px 30px rgba(11, 18, 32, 0.3);
+
+  animation: slide 0.2s ease-out;
+
+  &.info {
+    border-left-color: #ea7a0c;
+  }
+
+  &.error {
+    border-left-color: #dc2626;
+  }
+}
+
+@keyframes slide {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

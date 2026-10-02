@@ -1,1 +1,193 @@
-<p>savings works!</p>
+<div class="savings-page">
+
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">CFHOP Admin</p>
+      <h1>Savings & Groups</h1>
+      <p class="date">Friday, 2 October 2026</p>
+    </div>
+
+    <div class="header-user">
+      <span class="notification">5</span>
+
+      <div class="avatar">KN</div>
+
+      <div>
+        <strong>Kariuki N.</strong>
+        <span>Super Admin</span>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- Statistics -->
+
+  <section class="stats-grid">
+
+    <div class="stat-card">
+      <div class="stat-icon savings-icon">KES</div>
+
+      <div>
+        <span class="stat-label">Total group savings</span>
+        <h2>KES {{ formatKES(totalGroupSavings) }}</h2>
+        <p class="positive">+8.4% this month</p>
+      </div>
+    </div>
+
+
+    <div class="stat-card">
+      <div class="stat-icon groups-icon">G</div>
+
+      <div>
+        <span class="stat-label">Active savings groups</span>
+        <h2>{{ activeGroups }}</h2>
+        <p class="muted">{{ contributors | number }} contributors</p>
+      </div>
+    </div>
+
+
+    <div class="stat-card">
+      <div class="stat-icon contribution-icon">↗</div>
+
+      <div>
+        <span class="stat-label">Average contribution</span>
+        <h2>KES {{ formatKES(averageContribution) }}</h2>
+        <p class="muted">per member / month</p>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- Savings Goals -->
+
+  <section class="section">
+
+    <div class="section-header">
+      <div>
+        <h2>Savings goals</h2>
+        <p>Progress across active community goals</p>
+      </div>
+
+      <button class="primary-button" type="button" (click)="createGoal()">
+        + Create goal
+      </button>
+    </div>
+
+
+    <div class="goals-grid">
+
+      <article class="goal-card" *ngFor="let goal of goals">
+
+        <div class="goal-top">
+          <div>
+            <h3>{{ goal.name }}</h3>
+            <p>{{ goal.group }} · due {{ goal.due }}</p>
+          </div>
+
+          <strong>{{ getGoalProgress(goal) }}%</strong>
+        </div>
+
+
+        <div class="goal-amount">
+          <span>
+            KES {{ formatKES(goal.saved) }}
+          </span>
+
+          <span>
+            / KES {{ formatKES(goal.target) }}
+          </span>
+        </div>
+
+
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            [style.width.%]="getGoalProgress(goal)">
+          </div>
+        </div>
+
+
+        <p class="funded">
+          {{ getGoalProgress(goal) }}% funded
+        </p>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- Savings Groups -->
+
+  <section class="section">
+
+    <div class="section-header">
+      <div>
+        <h2>Savings groups</h2>
+        <p>Chamas and SACCOs on CFHOP</p>
+      </div>
+    </div>
+
+
+    <div class="table-card">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Group</th>
+            <th>ID</th>
+            <th>Region</th>
+            <th>Members</th>
+            <th>Savings balance</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+
+        <tbody>
+
+          <tr *ngFor="let group of groups">
+
+            <td>
+              <strong>{{ group.name }}</strong>
+            </td>
+
+            <td class="group-id">
+              {{ group.id }}
+            </td>
+
+            <td>
+              {{ group.region }}
+            </td>
+
+            <td>
+              {{ group.members }}
+            </td>
+
+            <td class="balance">
+              KES {{ formatKES(group.balance) }}
+            </td>
+
+            <td>
+              <span
+                class="status"
+                [class.active]="group.status === 'active'"
+                [class.suspended]="group.status === 'suspended'">
+                {{ group.status }}
+              </span>
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</div>
